@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Calculadora simples de juros compostos: insira seu valor inicial, aporte mensal, taxa de juros e prazo para ver o valor final do seu investimento.">
+    <meta name="keywords" content="calculadora de juros compostos, investimento, juros, valor final, rendimento, cálculo financeiro">
+    <meta property="og:title" content="Calculadora Simples de Juros Compostos">
+    <meta property="og:description" content="Calcule seu rendimento com nossa calculadora de juros compostos. Descubra quanto seu investimento pode render!">
+    <meta property="og:url" content="https://seu-site.com/calculadora-juros-compostos">
+    <meta property="og:image" content="URL_da_imagem_de_previsão.png">
+    <title>Calculadora Simples de Juros Compostos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #0038A8;
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        h1, h2, h3 {
+            color: #fff;
+        }
+        form {
+            background-color: #f0f8ff;
+            color: #333;
+            border-radius: 8px;
+            padding: 20px;
+            display: inline-block;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input, select, button {
+            margin-top: 5px;
+            padding: 8px;
+            width: 100%;
+            max-width: 300px;
+        }
+        button {
+            background-color: #0038A8;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #001f5b;
+        }
+        .resultados {
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #000;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+        }
+        .resultados h3 {
+            color: #000;
+        }
+        .link-recomendado {
+            color: #0038A8;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        footer {
+            margin-top: 40px;
+            font-size: 0.9em;
+            color: #ccc;
+        }
+        .grafico-container {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0; /* Ajuste da margem para aproximar do conteúdo */
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Calculadora Simples de Juros Compostos</h1>
+    <h2>Insira seus dados e veja quanto seu investimento pode render!</h2>
+
+    <form id="form">
+        <label for="valorInicial">Valor Inicial (R$):</label>
+        <input type="text" id="valorInicial" required>
+
+        <label for="valorMensal">Valor Mensal (R$):</label>
+        <input type="text" id="valorMensal" required>
+
+        <label for="taxaJuros">Taxa de Juros (%):</label>
+        <input type="number" id="taxaJuros" step="0.01" min="0" required>
+
+        <label for="tipoJuros">Tipo de Juros:</label>
+        <select id="tipoJuros" required>
+            <option value="mensal">Mensal</option>
+            <option value="anual">Anual</option>
+        </select>
+
+        <label for="tempo">Tempo:</label>
+        <input type="number" id="tempo" min="1" required>
+        
+        <label for="unidadeTempo">Unidade de Tempo:</label>
+        <select id="unidadeTempo" required>
+            <option value="meses">Meses</option>
+            <option value="anos">Anos</option>
+        </select>
+
+        <button type="button" onclick="calcular()">Calcular Juros Compostos</button>
+    </form>
+
+    <div class="resultados" id="resultados">
+        <h3>Resultados</h3>
+        <p><strong>Valor Investido:</strong> R$ <span id="valorInvestido"></span></p>
+        <p><strong>Juros Obtidos:</strong> R$ <span id="jurosObtidos"></span></p>
+        <p><strong>Valor Total:</strong> R$ <span id="valorTotal"></span></p>
+        
+        <!-- Gráfico Centralizado -->
+        <div class="grafico-container">
+            <canvas id="graficoJuros" width="300" height="300"></canvas>
+        </div>
+
+        <p>Obrigado por visitar nosso site! Visite também:</p>
+        <a href="https://calculatorafinanciamento.netlify.app/" target="_blank" class="link-recomendado">Calculadora de Financiamento</a> | 
+        <a href="https://calculadorarentabilidadeanual.netlify.app/" target="_blank" class="link-recomendado">Calculadora de Rentabilidade Anual</a>
+    </div>
+
+    <footer>
+        © 2024 Gabriel Alcantara. Todos os direitos reservados.<br>
+        Este site e seu conteúdo são propriedade de Gabriel Alcantara. Nenhuma parte deste site pode ser reproduzida, distribuída, ou utilizada sem permissão expressa.<br>
+        Conecte-se comigo no <a href="https://www.linkedin.com/in/gabrielfaa/" target="_blank" style="color: #fff;">LinkedIn</a> ou e-mail: <a href="mailto:agudaarte@gmail.com" style="color: #fff;">agudaarte@gmail.com</a>.
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        function formatarNumero(valor) {
+            return parseFloat(valor.replace(/\./g, '').replace(',', '.')) || 0;
+        }
+
+        function calcular() {
+            const valorInicial = formatarNumero(document.getElementById("valorInicial").value);
+            const valorMensal = formatarNumero(document.getElementById("valorMensal").value);
+            const taxaJuros = parseFloat(document.getElementById("taxaJuros").value) / 100;
+            let tempo = parseInt(document.getElementById("tempo").value);
+            const tipoJuros = document.getElementById("tipoJuros").value;
+            const unidadeTempo = document.getElementById("unidadeTempo").value;
+
+            if (unidadeTempo === "anos") tempo *= 12;
+            const taxaMensal = tipoJuros === "anual" ? Math.pow(1 + taxaJuros, 1 / 12) - 1 : taxaJuros;
+
+            let valorTotal = valorInicial;
+            let valorInvestido = valorInicial;
+
+            for (let i = 0; i < tempo; i++) {
+                valorTotal = (valorTotal + valorMensal) * (1 + taxaMensal);
+                valorInvestido += valorMensal;
+            }
+
+            const jurosObtidos = valorTotal - valorInvestido;
+            document.getElementById("valorInvestido").innerText = valorInvestido.toFixed(2).replace('.', ',');
+            document.getElementById("jurosObtidos").innerText = jurosObtidos.toFixed(2).replace('.', ',');
+            document.getElementById("valorTotal").innerText = valorTotal.toFixed(2).replace('.', ',');
+
+            document.getElementById("resultados").style.display = "block";
+            exibirGrafico(valorInvestido, jurosObtidos);
+        }
+
+        function exibirGrafico(valorInvestido, jurosObtidos) {
+            const ctx = document.getElementById("graficoJuros").getContext("2d");
+            new Chart(ctx, {
+                type: "pie",
+                data: {
+                    labels: ["Valor Investido", "Juros Obtidos"],
+                    datasets: [{
+                        data: [valorInvestido, jurosObtidos],
+                        backgroundColor: ["#0038A8", "#FFD700"]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: "bottom"
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>
